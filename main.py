@@ -29,7 +29,7 @@ def main():
     Player.containers = (updateable, drawable)
     Asteroid.containers = (updateable, drawable, asteroids)
     AsteroidField.containers = (updateable)
-    Shot.containers = (updateable, drawable)
+    Shot.containers = (updateable, drawable, shots)
 
     player = Player(x,y)
     asteroid_field = AsteroidField()
@@ -51,6 +51,12 @@ def main():
             if asteroid.checkCollision(player):
                 print("Game Over!")
                 sys.exit()
+
+            for shot in shots:
+                if asteroid.checkCollision(shot):
+                    shot.kill()
+                    asteroid.split()
+
         pygame.display.flip()
 
         # Limits game to 60fps

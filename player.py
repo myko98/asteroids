@@ -3,9 +3,11 @@ from constants import *
 from shot import Shot
 
 class Player(CircleShape):
+
     def __init__(self, x, y):
         super().__init__(x,y,PLAYER_RADIUS)
         self.rotation = 0
+        self.shoot_speed = 0
 
     def draw(self, screen):
         pygame.draw.polygon(screen, (255,255,255), self.triangle(), 2)
@@ -23,6 +25,7 @@ class Player(CircleShape):
         self.rotation += PLAYER_TURN_SPEED * dt
 
     def update(self, dt):
+        self.shoot_speed -= dt
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -41,9 +44,12 @@ class Player(CircleShape):
         self.position += forward * PLAYER_SPEED * dt
 
     def shoot(self, dt):
+        if self.shoot_speed > 0:
+            return
         # create a new shot everytime space is pressed
         newShot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
 
         # not sure how the velocity works...
         vector = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
         newShot.velocity = vector
+        self.shoot_speed = PLAYER_SHOOT_COOLDOWN
